@@ -19,3 +19,23 @@ dependencies = [
 DJANGO_SETTINGS_MODULE = "salud_agenda.settings"
 python_files = ["tests.py", "tests_*.py", "test_*.py", "*_tests.py",]
 norecursedirs = [".venv", "dist", "*/migrations/"]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.7",
+]
+
+[tool.ruff]
+line-length = 125
+indent-width = 4
+
+[tool.ruff.format]
+exclude = ["*.pyi"]
+quote-style = "double"
+line-ending = "auto"
+
+[tool.ruff.lint]
+select = ["E", "I"]
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = ["E501"]
