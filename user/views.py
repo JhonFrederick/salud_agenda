@@ -21,9 +21,9 @@ class AdminCreateView(APIView):
     permission_classes = [permissions.AllowAny]
 
     @extend_schema(
-        tags=['Users'],
-        summary='Create an admin user',
-        description='Registers a new user with the ADMIN role and creates an associated AdminProfile.',
+        tags=["Users"],
+        summary="Create an admin user",
+        description="Registers a new user with the ADMIN role and creates an associated AdminProfile.",
         request=AdminCreateSerializer,
         responses={status.HTTP_201_CREATED: AdminCreateSerializer},
     )
@@ -39,9 +39,9 @@ class MedicCreateView(APIView):
     permission_classes = [permissions.AllowAny]
 
     @extend_schema(
-        tags=['Users'],
-        summary='Create a medic user',
-        description='Registers a new user with the MEDIC role and creates an associated MedicProfile.',
+        tags=["Users"],
+        summary="Create a medic user",
+        description="Registers a new user with the MEDIC role and creates an associated MedicProfile.",
         request=MedicCreateSerializer,
         responses={status.HTTP_201_CREATED: MedicCreateSerializer},
     )
@@ -57,9 +57,9 @@ class PatientCreateView(APIView):
     permission_classes = [permissions.AllowAny]
 
     @extend_schema(
-        tags=['Users'],
-        summary='Create a patient user',
-        description='Registers a new user with the PATIENT role and creates an associated PatientProfile.',
+        tags=["Users"],
+        summary="Create a patient user",
+        description="Registers a new user with the PATIENT role and creates an associated PatientProfile.",
         request=PatientCreateSerializer,
         responses={status.HTTP_201_CREATED: PatientCreateSerializer},
     )

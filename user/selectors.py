@@ -1,5 +1,5 @@
 from typing import Optional
-from django.contrib.auth import get_user_model
+
 from django.db.models import QuerySet
 
 from .models import AdminProfile, MedicProfile, PatientProfile, User
@@ -20,11 +20,11 @@ def get_user_with_profile(user_id: int) -> Optional[User]:
     if not user:
         return None
     if user.role == User.Role.ADMIN:
-        return User.objects.select_related('admin_profile').filter(id=user_id).first()
+        return User.objects.select_related("admin_profile").filter(id=user_id).first()
     elif user.role == User.Role.MEDIC:
-        return User.objects.select_related('medic_profile').filter(id=user_id).first()
+        return User.objects.select_related("medic_profile").filter(id=user_id).first()
     elif user.role == User.Role.PATIENT:
-        return User.objects.select_related('patient_profile').filter(id=user_id).first()
+        return User.objects.select_related("patient_profile").filter(id=user_id).first()
     return user
 
 
@@ -52,7 +52,7 @@ def list_medics(
     """
     Lists medic users with their profiles, optionally filtered by specialty.
     """
-    qs = User.objects.filter(role=User.Role.MEDIC).select_related('medic_profile')
+    qs = User.objects.filter(role=User.Role.MEDIC).select_related("medic_profile")
     if is_active is not None:
         qs = qs.filter(is_active=is_active)
     if specialty:
@@ -64,7 +64,7 @@ def list_patients(*, is_active: Optional[bool] = True) -> QuerySet[User]:
     """
     Lists patient users with their profiles.
     """
-    qs = User.objects.filter(role=User.Role.PATIENT).select_related('patient_profile')
+    qs = User.objects.filter(role=User.Role.PATIENT).select_related("patient_profile")
     if is_active is not None:
         qs = qs.filter(is_active=is_active)
     return qs
@@ -74,7 +74,7 @@ def list_admins(*, is_active: Optional[bool] = True) -> QuerySet[User]:
     """
     Lists admin users with their profiles.
     """
-    qs = User.objects.filter(role=User.Role.ADMIN).select_related('admin_profile')
+    qs = User.objects.filter(role=User.Role.ADMIN).select_related("admin_profile")
     if is_active is not None:
         qs = qs.filter(is_active=is_active)
     return qs
@@ -84,18 +84,18 @@ def get_medic_profile_by_user_id(user_id: int) -> Optional[MedicProfile]:
     """
     Retrieves the MedicProfile for a given user ID.
     """
-    return MedicProfile.objects.select_related('user').filter(user_id=user_id).first()
+    return MedicProfile.objects.select_related("user").filter(user_id=user_id).first()
 
 
 def get_patient_profile_by_user_id(user_id: int) -> Optional[PatientProfile]:
     """
     Retrieves the PatientProfile for a given user ID.
     """
-    return PatientProfile.objects.select_related('user').filter(user_id=user_id).first()
+    return PatientProfile.objects.select_related("user").filter(user_id=user_id).first()
 
 
 def get_admin_profile_by_user_id(user_id: int) -> Optional[AdminProfile]:
     """
     Retrieves the AdminProfile for a given user ID.
     """
-    return AdminProfile.objects.select_related('user').filter(user_id=user_id).first()
+    return AdminProfile.objects.select_related("user").filter(user_id=user_id).first()

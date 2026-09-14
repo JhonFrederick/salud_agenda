@@ -1,4 +1,5 @@
 from typing import Optional
+
 from django.db import transaction
 
 from .models import AdminProfile, MedicProfile, PatientProfile, User
@@ -9,9 +10,9 @@ def create_admin_user(
     *,
     username: str,
     password: str,
-    email: str = '',
-    first_name: str = '',
-    last_name: str = '',
+    email: str = "",
+    first_name: str = "",
+    last_name: str = "",
     **extra_fields,
 ) -> User:
     """
@@ -36,11 +37,11 @@ def create_medic_user(
     *,
     username: str,
     password: str,
-    email: str = '',
-    first_name: str = '',
-    last_name: str = '',
-    license_number: str = '',
-    specialty: str = '',
+    email: str = "",
+    first_name: str = "",
+    last_name: str = "",
+    license_number: str = "",
+    specialty: str = "",
     **extra_fields,
 ) -> User:
     """
@@ -69,11 +70,11 @@ def create_patient_user(
     *,
     username: str,
     password: str,
-    email: str = '',
-    first_name: str = '',
-    last_name: str = '',
+    email: str = "",
+    first_name: str = "",
+    last_name: str = "",
     date_of_birth: Optional[object] = None,
-    phone_number: str = '',
+    phone_number: str = "",
     **extra_fields,
 ) -> User:
     """
@@ -95,4 +96,3 @@ def create_patient_user(
         phone_number=phone_number,
     )
     return user
-

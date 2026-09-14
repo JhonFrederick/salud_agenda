@@ -7,7 +7,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path('admin/', AdminCreateView.as_view(), name='admin-create'),
-    path('medic/', MedicCreateView.as_view(), name='medic-create'),
-    path('patient/', PatientCreateView.as_view(), name='patient-create'),
+    path("admin/", AdminCreateView.as_view(), name="admin-create"),
+    path("medic/", MedicCreateView.as_view(), name="medic-create"),
+    path("patient/", PatientCreateView.as_view(), name="patient-create"),
 ]
