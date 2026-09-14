@@ -9,6 +9,13 @@ dependencies = [
     "djangorestframework>=3.18.1",
     "djangorestframework-simplejwt>=5.5.1",
     "drf-spectacular>=0.30.0",
+    "factory-boy>=3.3.3",
     "psycopg[binary,pool]>=3.3.5",
+    "pytest-django[django]>=4.14.0",
     "python-dotenv>=1.2.3",
 ]
+
+[tool.pytest]
+DJANGO_SETTINGS_MODULE = "salud_agenda.settings"
+python_files = ["tests.py", "tests_*.py", "test_*.py", "*_tests.py",]
+norecursedirs = [".venv", "dist", "*/migrations/"]
