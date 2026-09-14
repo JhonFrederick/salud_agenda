@@ -1,7 +1,10 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-class User(AbstractUser):
+from common.models import BaseModel
+
+
+class User(BaseModel, AbstractUser):
     class Role(models.TextChoices):
         SUPERADMIN = 'SUPERADMIN', 'Superadmin'
         ADMIN = 'ADMIN', 'Admin'
@@ -18,7 +21,7 @@ class User(AbstractUser):
         return self.username
 
 
-class AdminProfile(models.Model):
+class AdminProfile(BaseModel):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -29,7 +32,7 @@ class AdminProfile(models.Model):
         return f'Admin profile: {self.user.username}'
 
 
-class MedicProfile(models.Model):
+class MedicProfile(BaseModel):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
@@ -42,7 +45,7 @@ class MedicProfile(models.Model):
         return f'Medic profile: {self.user.username}'
 
 
-class PatientProfile(models.Model):
+class PatientProfile(BaseModel):
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
