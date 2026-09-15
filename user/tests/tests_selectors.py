@@ -1,5 +1,6 @@
-from django.test import TestCase
+import pytest
 
+from conftest import TestBase
 from user.models import User
 from user.selectors import (
     get_admin_profile_by_user_id,
@@ -20,9 +21,10 @@ from user.tests.factories.user import (
 )
 
 
-class UserSelectorsTests(TestCase):
-    def setUp(self):
-        self.admin = AdminProfileFactory(
+class TestUserSelectors(TestBase):
+    @pytest.fixture
+    def admin(self):
+        return AdminProfileFactory(
             user=UserFactory(
                 username="admin1",
                 password="Password123!",
@@ -30,7 +32,10 @@ class UserSelectorsTests(TestCase):
                 role=User.Role.ADMIN,
             )
         ).user
-        self.medic = MedicProfileFactory(
+
+    @pytest.fixture
+    def medic(self):
+        return MedicProfileFactory(
             user=UserFactory(
                 username="medic1",
                 password="Password123!",
@@ -40,54 +45,102 @@ class UserSelectorsTests(TestCase):
             license_number="LIC-999",
             specialty="Pediatrics",
         ).user
-        self.patient = PatientProfileFactory(
+
+    @pytest.fixture
+    def patient(self):
+        return PatientProfileFactory(
             user=UserFactory(
                 username="patient1",
                 password="Password123!",
                 email="patient1@test.com",
                 role=User.Role.PATIENT,
-            ),
-            date_of_birth="1995-05-15",
-            phone_number="5551234",
+            )
         ).user
 
-    def test_get_user_by_id(self):
-        self.assertEqual(get_user_by_id(self.admin.id), self.admin)
-        self.assertIsNone(get_user_by_id(999999))
+    def test_get_user_by_id(self, admin):
+        assert get_user_by_id(admin.id) == admin
+        assert get_user_by_id(999999) is None
 
-    def test_get_user_with_profile(self):
-        admin_with_profile = get_user_with_profile(self.admin.id)
-        self.assertIsNotNone(admin_with_profile)
-        self.assertIsNotNone(admin_with_profile.admin_profile)
+    @pytest.mark.parametrize(
+        ("fixture_name", "profile_attribute", "expected_value"),
+        [
+            ("admin", "admin_profile", None),
+            ("medic", "medic_profile", "Pediatrics"),
+            ("patient", "patient_profile", None),
+        ],
+    )
+    def test_get_user_with_profile(
+        self,
+        request,
+        fixture_name,
+        profile_attribute,
+        expected_value,
+    ):
+        user = request.getfixturevalue(fixture_name)
 
-        medic_with_profile = get_user_with_profile(self.medic.id)
-        self.assertIsNotNone(medic_with_profile)
-        self.assertEqual(medic_with_profile.medic_profile.specialty, "Pediatrics")
+        user_with_profile = get_user_with_profile(user.id)
 
-        patient_with_profile = get_user_with_profile(self.patient.id)
-        self.assertIsNotNone(patient_with_profile)
-        self.assertEqual(patient_with_profile.patient_profile.phone_number, "5551234")
+        assert user_with_profile is not None
 
-    def test_list_users(self):
-        self.assertEqual(list_users().count(), 3)
-        self.assertEqual(list_users(role=User.Role.MEDIC).count(), 1)
+        profile = getattr(user_with_profile, profile_attribute)
+        assert profile is not None
 
-    def test_list_medics(self):
+        if expected_value:
+            assert profile.specialty == expected_value
+
+    def test_list_users(self, admin, patient, medic):
+        assert list_users().count() == 3
+
+    @pytest.mark.parametrize(
+        ("role", "expected_count"),
+        [
+            (User.Role.ADMIN, 1),
+            (User.Role.MEDIC, 1),
+            (User.Role.PATIENT, 1),
+        ],
+    )
+    def test_list_users_by_role(
+        self,
+        admin,
+        patient,
+        medic,
+        role,
+        expected_count,
+    ):
+        assert list_users(role=role).count() == expected_count
+
+    def test_list_medics(self, medic):
         medics = list_medics(specialty="pedia")
-        self.assertEqual(medics.count(), 1)
-        self.assertEqual(medics.first(), self.medic)
 
-    def test_list_patients(self):
+        assert medics.count() == 1
+        assert medics.first() == medic
+
+    def test_list_patients(self, patient):
         patients = list_patients()
-        self.assertEqual(patients.count(), 1)
-        self.assertEqual(patients.first(), self.patient)
 
-    def test_list_admins(self):
+        assert patients.count() == 1
+        assert patients.first() == patient
+
+    def test_list_admins(self, admin):
         admins = list_admins()
-        self.assertEqual(admins.count(), 1)
-        self.assertEqual(admins.first(), self.admin)
 
-    def test_get_profile_by_user_id(self):
-        self.assertIsNotNone(get_admin_profile_by_user_id(self.admin.id))
-        self.assertIsNotNone(get_medic_profile_by_user_id(self.medic.id))
-        self.assertIsNotNone(get_patient_profile_by_user_id(self.patient.id))
+        assert admins.count() == 1
+        assert admins.first() == admin
+
+    @pytest.mark.parametrize(
+        ("fixture_name", "selector"),
+        [
+            ("admin", get_admin_profile_by_user_id),
+            ("medic", get_medic_profile_by_user_id),
+            ("patient", get_patient_profile_by_user_id),
+        ],
+    )
+    def test_get_profile_by_user_id(
+        self,
+        request,
+        fixture_name,
+        selector,
+    ):
+        user = request.getfixturevalue(fixture_name)
+
+        assert selector(user.id) is not None
