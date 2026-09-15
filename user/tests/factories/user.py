@@ -14,6 +14,16 @@ class UserFactory(DjangoModelFactory):
     last_name = factory.Faker("last_name")
     role = User.Role.PATIENT
 
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        password = kwargs.pop("password", "123456")
+
+        user = model_class(*args, **kwargs)
+        user.set_password(password)
+        user.save()
+
+        return user
+
 
 class AdminProfileFactory(DjangoModelFactory):
     class Meta:

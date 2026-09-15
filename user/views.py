@@ -17,7 +17,7 @@ from .service import (
 # TODO: Add permission classes
 
 
-class AdminCreateView(APIView):
+class AdminCreateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     @extend_schema(
@@ -35,7 +35,7 @@ class AdminCreateView(APIView):
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
-class MedicCreateView(APIView):
+class MedicCreateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     @extend_schema(
@@ -53,7 +53,7 @@ class MedicCreateView(APIView):
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
 
 
-class PatientCreateView(APIView):
+class PatientCreateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     @extend_schema(
